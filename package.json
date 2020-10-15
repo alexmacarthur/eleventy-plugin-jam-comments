@@ -1,0 +1,20 @@
+{
+  "name": "eleventy-plugin-jam-comments",
+  "version": "0.0.1",
+  "author": "Alex MacArthur <alex@macarthur.me> (https://macarthur.me)",
+  "license": "MIT",
+  "description": "The official plugin for integrating JamComments into your Eleventy site.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jam-comments",
+    "eleventy",
+    "comments"
+  ],
+  "dependencies": {
+    "nunjucks": "^3.2.2",
+    "outdent": "^0.7.1"
+  }
+}
