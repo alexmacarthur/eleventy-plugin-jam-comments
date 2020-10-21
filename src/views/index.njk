@@ -1,9 +1,13 @@
-<div class="jc-Shell">
+<style>{{ css | safe }}</style>
+
+<div class="jc-Shell" data-jam-comments>
   <div class="jc-CommentBox">
     <div class="jc-CommentBox-inputs">
       <h3>Leave a Comment</h3>
       <form class="jc-CommentBox-form">
-        <label class="jc-CommentBox-label jc-CommentBox-textarea">
+        <label
+          class="jc-CommentBox-label jc-CommentBox-textarea"
+        >
           <textarea name="content" required=""></textarea>
           <small class="jc-CommentBox-attribution">
             Powered by
@@ -17,11 +21,11 @@
             </a>
           </small>
         </label>
-        <label class="jc-CommentBox-label">
+        <label class="jc-CommentBox-label jc-CommentBox-contactInput">
           Name
         <input type="text" name="name" required="" />
         </label>
-        <label class="jc-CommentBox-label">
+        <label class="jc-CommentBox-label jc-CommentBox-contactInput">
           Email Address
           <input type="email" name="emailAddress" />
         </label>
@@ -34,7 +38,11 @@
   <div class="jc-CommentList">
     <span class="jc-CommentList-count">0 comments</span>
     <ul class="jc-CommentList-list">
-      COMMENTS WILL GO HERE.
+      {% for comment in comments %}
+        {{ comment.content }}
+      {% endfor %}
     </ul>
   </div>
 </div>
+
+<script>{{ js | safe }}</script>
