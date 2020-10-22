@@ -2,40 +2,62 @@ require("isomorphic-fetch");
 const fs = require("fs");
 const path = require("path");
 const nunjucks = require("nunjucks");
+const { toIsoString, toPrettyDate, getCompiledAsset, getFileContents } = require("./utils");
 
 const CommentFetcher = require("./CommentFetcher");
-const fetcher = new CommentFetcher();
 const env = nunjucks.configure(path.join(__dirname, "views"));
 
 /**
- * Get compiled SCSS file contents from directory.
+ * Replace each placeholder with the respective environment variable.
+ *
+ * @param {string} js
+ * @param {string} domain
+ * @param {string} apiKey
+ * @return {string}
  */
-const getAsset = (asset) => {
-  try {
-    return fs.readFileSync(
-      `${path.join(__dirname, `assets/dist/index.${asset}`)}`,
-      "utf8"
-    );
-  } catch (e) {
-    return "";
-  }
+const setEnvironmentVariables = (js, domain, apiKey) => {
+  return js
+    .replace(/JAM_COMMENTS_DOMAIN/, domain)
+    .replace(/JAM_COMMENTS_API_KEY/, apiKey);
 };
 
-const commentForm = async function () {
-
-  console.log("IN FORMzzsddfffpppppp");
+/**
+ * Render the comment form.
+ *
+ * @param {object} options
+ */
+const commentForm = async function (options, url) {
+  const fetcher = new CommentFetcher(options);
   const {
     data: { comments },
     errors,
   } = await fetcher.getComments();
-  const css = getAsset("css");
-  const js = getAsset("js");
+  const { domain, apiKey } = options;
+  const loadingSvg = getFileContents(`assets/img/loading.svg`);
+  const css = getCompiledAsset("css");
+  const js = setEnvironmentVariables(getCompiledAsset("js"), domain, apiKey);
 
   if (errors) {
     throw "Something went wrong while query for comments.";
   }
 
-  return env.render("index.njk", { comments, css, js });
+  env.addFilter('iso', (time) => {
+    return toIsoString(time);
+  });
+
+  env.addFilter('prettyDate', time => {
+    return toPrettyDate(time);
+  });
+
+  return env.render("index.njk", {
+    comments,
+    css,
+    js,
+    loadingSvg,
+    domain,
+    apiKey,
+    url
+  });
 };
 
 module.exports = commentForm;

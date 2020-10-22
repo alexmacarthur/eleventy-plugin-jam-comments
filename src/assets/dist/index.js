@@ -271,12 +271,13 @@ function n({
     })
   };
 }
-},{}],"index.js":[function(require,module,exports) {
+},{}],"utils.js":[function(require,module,exports) {
 "use strict";
 
-require("../scss/style.scss");
-
-var _graphqlQuest = require("graphql-quest");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getCurrentTime = exports.formatFormValues = exports.toPrettyDate = exports.toIsoString = exports.dateFromUnix = void 0;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -290,7 +291,54 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-var CREATE_COMMENT_QUERY = "\n  mutation CreateComment(\n    $name: String!,\n    $path: String!,\n    $content: String!,\n    $domain: String!,\n    $emailAddress: String\n  ){\n    createComment(\n      name: $name,\n      path: $path,\n      content: $content,\n      emailAddress: $emailAddress\n      domain: $domain\n    ) {\n      createdAt\n      name\n      emailAddress\n      content\n      id\n      site {\n        domain\n      }\n    }\n  }\n";
+/**
+ * Given a timestamp, convert it to a Date object.
+ *
+ * @param {number} unix
+ * @return {Date}
+ */
+var dateFromUnix = function dateFromUnix(unix) {
+  return new Date(Number(unix));
+};
+/**
+ * Convert unix timestamp to ISO string.
+ *
+ * @param {number} unix
+ * @return {string}
+ */
+
+
+exports.dateFromUnix = dateFromUnix;
+
+var toIsoString = function toIsoString(unix) {
+  return dateFromUnix(unix).toISOString();
+};
+/**
+ * Convert a Unix timestamp to a nice, pretty format.
+ *
+ * @param {integer} unix
+ * @return {string}
+ */
+
+
+exports.toIsoString = toIsoString;
+
+var toPrettyDate = function toPrettyDate(unix) {
+  var date = dateFromUnix(unix);
+  var hoursOffset = date.getTimezoneOffset() / 60;
+  date.setHours(date.getHours() - hoursOffset);
+  var dateString = date.toLocaleString("en-US").split(",");
+  return dateString[0].trim();
+};
+/**
+ * Given a list of elements, convert the values into an object.
+ *
+ * @param {NodeList} htmlElementCollection
+ * @return {object}
+ */
+
+
+exports.toPrettyDate = toPrettyDate;
 
 var formatFormValues = function formatFormValues(htmlElementCollection) {
   return _toConsumableArray(htmlElementCollection).reduce(function (acc, item) {
@@ -300,39 +348,186 @@ var formatFormValues = function formatFormValues(htmlElementCollection) {
   }, {});
 };
 
-function CommentController(shell) {
-  shell.querySelector('[name="content"]').addEventListener('focus', function (e) {
-    _toConsumableArray(shell.querySelectorAll('.jc-CommentBox-contactInput')).forEach(function (i) {
-      i.style.display = 'flex';
-    });
-  });
-  shell.querySelector('form').addEventListener('submit', function (e) {
-    e.preventDefault();
+exports.formatFormValues = formatFormValues;
 
-    var _formatFormValues = formatFormValues(e.target.elements),
-        content = _formatFormValues.content,
-        name = _formatFormValues.name,
-        emailAddress = _formatFormValues.emailAddress;
+var getCurrentTime = function getCurrentTime() {
+  return new Date().getTime();
+};
 
-    var variables = {
-      name: name,
-      domain: "CONFIG>COM",
-      content: content,
-      emailAddress: emailAddress,
-      path: window.location.pathname
-    };
-    (0, _graphqlQuest.quest)("http://localhost:4000/graphql", CREATE_COMMENT_QUERY, variables).then(function (response) {
-      console.log(response);
-    });
-  });
-}
+exports.getCurrentTime = getCurrentTime;
+},{}],"queries.js":[function(require,module,exports) {
+"use strict";
 
-var commentShells = _toConsumableArray(document.querySelectorAll('[data-jam-comments]'));
-
-commentShells.forEach(function (shell) {
-  return CommentController(shell);
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-},{"../scss/style.scss":"../scss/style.scss","graphql-quest":"../../../node_modules/graphql-quest/dist/quest.es.js"}],"../../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+exports.CREATE_COMMENT_QUERY = void 0;
+var CREATE_COMMENT_QUERY = "\n  mutation CreateComment(\n    $name: String!,\n    $path: String!,\n    $content: String!,\n    $domain: String!,\n    $emailAddress: String\n  ){\n    createComment(\n      name: $name,\n      path: $path,\n      content: $content,\n      emailAddress: $emailAddress\n      domain: $domain\n    ) {\n      createdAt\n      name\n      emailAddress\n      content\n      id\n      site {\n        domain\n      }\n    }\n  }\n";
+exports.CREATE_COMMENT_QUERY = CREATE_COMMENT_QUERY;
+},{}],"CommentController.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = CommentController;
+
+var _graphqlQuest = require("graphql-quest");
+
+var _utils = require("./utils");
+
+var _queries = require("./queries");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function CommentController(shell) {
+  var minimumSubmissionTime = 1000;
+  var loadingSvg = shell.querySelector(".jc-CommentBox-loadingDots");
+  var commentList = shell.querySelector('[data-jam-comments-component="list"]');
+  var message = shell.querySelector('[data-jam-comments-component="message"]');
+  var client = new _graphqlQuest.QuestClient({
+    endpoint: "http://localhost:4000/graphql",
+    headers: {
+      "x-api-key": "JAM_COMMENTS_API_KEY"
+    }
+  });
+  /**
+   * When textarea is focused upon, show all inputs.
+   *
+   * @return {void}
+   */
+
+  var listenForTextareaFocus = function listenForTextareaFocus() {
+    shell.querySelector('[name="content"]').addEventListener("focus", function (e) {
+      _toConsumableArray(shell.querySelectorAll(".jc-CommentBox-contactInput")).forEach(function (i) {
+        i.style.display = "flex";
+      });
+    });
+  };
+  /**
+   * When form is submitted, send to service & respond accordingly.
+   *
+   * @return {void}
+   */
+
+
+  var listenForSubmission = function listenForSubmission() {
+    shell.querySelector("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var startTime = (0, _utils.getCurrentTime)();
+
+      var _formatFormValues = (0, _utils.formatFormValues)(e.target.elements),
+          content = _formatFormValues.content,
+          name = _formatFormValues.name,
+          emailAddress = _formatFormValues.emailAddress;
+
+      console.log(shell.dataset.jamCommentsUrl);
+      var variables = {
+        name: name,
+        domain: "JAM_COMMENTS_DOMAIN",
+        content: content,
+        emailAddress: emailAddress,
+        path: shell.dataset.jamCommentsUrl || window.location.pathname
+      }; // Show the loading dots.
+
+      loadingSvg.style.display = "";
+      client.send(_queries.CREATE_COMMENT_QUERY, variables).then(function (result) {
+        var remaining = minimumSubmissionTime - ((0, _utils.getCurrentTime)() - startTime);
+        var delay = remaining > 0 ? remaining : 0;
+
+        if (result.errors || !result.data) {
+          hideLoadingSvg();
+          return showError();
+        }
+
+        setTimeout(function () {
+          hideLoadingSvg();
+          appendComment(result.data.createComment);
+        }, delay);
+      });
+    });
+  };
+  /**
+   * Hide the loading SVG.
+   *
+   * @return {void}
+   */
+
+
+  var hideLoadingSvg = function hideLoadingSvg() {
+    loadingSvg.style.display = "none";
+  };
+  /**
+   * Display a generic error message.
+   *
+   * @return {void}
+   */
+
+
+  var showError = function showError() {
+    message.style.display = "";
+    message.firstElementChild.innerText = "Oh no! Something went wrong while trying to submit that comment.";
+  };
+  /**
+   * Clone list item and attach to list of comments with latest comment data.
+   *
+   * @return {void}
+   */
+
+
+  var appendComment = function appendComment(commentData) {
+    var contentKeysToReplace = ['content', 'createdAt', 'name'];
+    commentData.createdAt = (0, _utils.toPrettyDate)(commentData.createdAt);
+    var id = commentData.id;
+    var clonedItem = commentList.querySelector('li').cloneNode(true); // Set the text content for each element piece.
+
+    contentKeysToReplace.forEach(function (property) {
+      var node = clonedItem.querySelector("[data-jam-comments-component=\"".concat(property, "\"]"));
+      node.innerText = commentData[property];
+    });
+    clonedItem.querySelectorAll('[data-jam-comments-component="anchor"]').href = "#comment-".concat(id);
+    commentList.insertBefore(clonedItem, commentList.firstChild);
+  };
+
+  listenForSubmission();
+  listenForTextareaFocus();
+}
+},{"graphql-quest":"../../../node_modules/graphql-quest/dist/quest.es.js","./utils":"utils.js","./queries":"queries.js"}],"index.js":[function(require,module,exports) {
+"use strict";
+
+require("../scss/style.scss");
+
+var _CommentController = _interopRequireDefault(require("./CommentController"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+// Initialize each comment form found on the page.
+_toConsumableArray(document.querySelectorAll('[data-jam-comments-component="shell"]')).forEach(function (shell) {
+  return (0, _CommentController.default)(shell);
+});
+},{"../scss/style.scss":"../scss/style.scss","./CommentController":"CommentController.js"}],"../../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -360,7 +555,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59428" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51362" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

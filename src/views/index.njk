@@ -1,9 +1,22 @@
 <style>{{ css | safe }}</style>
 
-<div class="jc-Shell" data-jam-comments>
+<div class="jc-Shell" data-jam-comments-component="shell" data-jam-comments-url="{{url | safe}}">
   <div class="jc-CommentBox">
+    <div class="jc-CommentBox-loadingDots" style="display: none;">
+      {{ loadingSvg | safe }}
+    </div>
+
     <div class="jc-CommentBox-inputs">
       <h3>Leave a Comment</h3>
+
+      <div
+        class="jc-Message jc-Message--error"
+        data-jam-comments-component="message"
+        style="display: none;"
+      >
+        <p></p>
+      </div>
+
       <form class="jc-CommentBox-form">
         <label
           class="jc-CommentBox-label jc-CommentBox-textarea"
@@ -36,10 +49,37 @@
     </div>
   </div>
   <div class="jc-CommentList">
-    <span class="jc-CommentList-count">0 comments</span>
-    <ul class="jc-CommentList-list">
+    <span class="jc-CommentList-count">{{ comments.length }} comments</span>
+    <ul class="jc-CommentList-list" data-jam-comments-component="list">
       {% for comment in comments %}
-        {{ comment.content }}
+        <li class="jc-CommentList-item">
+          <div class="jc-Comment">
+            <span class="jc-Comment-details">
+              <h6 class="jc-Comment-name" data-jam-comments-component="name">
+                {{comment.name}}
+              </h6>
+              <a
+                class="jc-Comment-anchor"
+                href="#comment-{{comment.id}}"
+                aria-label="comment anchor link"
+                data-jam-comments-component="anchor"
+              >
+                <time
+                  class="jc-Comment-date"
+                  dateTime="{{ comment.createdAt | iso }}"
+                  data-jam-comments-component="createdAt"
+                >
+                  {{ comment.createdAt | prettyDate }}
+                </time>
+              </a>
+            </span>
+            <div class="jc-Comment-content">
+              <p data-jam-comments-component="content">
+                {{comment.content}}
+              </p>
+            </div>
+          </div>
+        </li>
       {% endfor %}
     </ul>
   </div>
