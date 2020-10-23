@@ -24,3 +24,9 @@ Embed the following Nunjucks shortcode in the template that renders individual p
 ```
 {% jamcomments %}
 ```
+
+## Supported Rendering Engines
+
+* *.njk
+* *.liquid
+* *.11ty.js

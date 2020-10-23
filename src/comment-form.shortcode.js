@@ -1,25 +1,16 @@
 require("isomorphic-fetch");
-const fs = require("fs");
 const path = require("path");
 const nunjucks = require("nunjucks");
-const { toIsoString, toPrettyDate, getCompiledAsset, getFileContents } = require("./utils");
+const {
+  toIsoString,
+  toPrettyDate,
+  getCompiledAsset,
+  getFileContents,
+  setEnvironmentVariables,
+} = require("./utils");
 
 const CommentFetcher = require("./CommentFetcher");
 const env = nunjucks.configure(path.join(__dirname, "views"));
-
-/**
- * Replace each placeholder with the respective environment variable.
- *
- * @param {string} js
- * @param {string} domain
- * @param {string} apiKey
- * @return {string}
- */
-const setEnvironmentVariables = (js, domain, apiKey) => {
-  return js
-    .replace(/JAM_COMMENTS_DOMAIN/, domain)
-    .replace(/JAM_COMMENTS_API_KEY/, apiKey);
-};
 
 /**
  * Render the comment form.
@@ -41,11 +32,11 @@ const commentForm = async function (options, url) {
     throw "Something went wrong while query for comments.";
   }
 
-  env.addFilter('iso', (time) => {
+  env.addFilter("iso", (time) => {
     return toIsoString(time);
   });
 
-  env.addFilter('prettyDate', time => {
+  env.addFilter("prettyDate", (time) => {
     return toPrettyDate(time);
   });
 
@@ -56,7 +47,7 @@ const commentForm = async function (options, url) {
     loadingSvg,
     domain,
     apiKey,
-    url
+    url,
   });
 };
 

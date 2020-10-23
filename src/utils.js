@@ -1,6 +1,20 @@
 const path = require('path');
 const fs = require('fs');
 
+/**
+ * Replace each placeholder with the respective environment variable.
+ *
+ * @param {string} js
+ * @param {string} domain
+ * @param {string} apiKey
+ * @return {string}
+ */
+const setEnvironmentVariables = (js, domain, apiKey) => {
+  return js
+    .replace(/JAM_COMMENTS_DOMAIN/, domain)
+    .replace(/JAM_COMMENTS_API_KEY/, apiKey);
+};
+
 const dateFromUnix = unix => {
   return new Date(Number(unix))
 }
@@ -12,7 +26,6 @@ const dateFromUnix = unix => {
  * @return {string}
  */
 const getCompiledAsset = (asset) => {
-  console.log(`${path.join(__dirname, `assets/dist/index.${asset}`)}`);
   try {
     return fs.readFileSync(
       `${path.join(__dirname, `assets/dist/index.${asset}`)}`,
@@ -66,5 +79,6 @@ module.exports = {
   toPrettyDate,
   toIsoString,
   getCompiledAsset,
-  getFileContents
+  getFileContents,
+  setEnvironmentVariables
 }
