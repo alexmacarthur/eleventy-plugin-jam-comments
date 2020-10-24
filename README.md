@@ -1,4 +1,5 @@
 # eleventy-plugin-jam-comments
+
 The official plugin for integrating [JamComments](https://jamcomments.com) into your Eleventy site.
 
 ## Prerequisites
@@ -34,6 +35,5 @@ Embed the following Nunjucks shortcode in the template that renders individual p
 
 ## Supported Rendering Engines
 
-* *.njk
-* *.liquid
-
+- \*.njk
+- \*.liquid

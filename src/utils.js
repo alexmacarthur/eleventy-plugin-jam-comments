@@ -1,8 +1,8 @@
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 /**
- * Replace each placeholder with the respective environment variable.
+ * Replace each placeholder with the correct environment variable.
  *
  * @param {string} js
  * @param {string} domain
@@ -15,9 +15,9 @@ const setEnvironmentVariables = (js, domain, apiKey) => {
     .replace(/JAM_COMMENTS_API_KEY/, apiKey);
 };
 
-const dateFromUnix = unix => {
-  return new Date(Number(unix))
-}
+const dateFromUnix = (unix) => {
+  return new Date(Number(unix));
+};
 
 /**
  * Get compiled SCSS file contents from directory.
@@ -57,9 +57,9 @@ const getFileContents = (filePath) => {
  * @param {number} unix
  * @return {string}
  */
-const toIsoString = unix => {
-  return dateFromUnix(unix).toISOString()
-}
+const toIsoString = (unix) => {
+  return dateFromUnix(unix).toISOString();
+};
 
 /**
  * Convert a Unix timestamp to a nice, pretty format.
@@ -67,18 +67,18 @@ const toIsoString = unix => {
  * @param {integer} unix
  * @return {string}
  */
-const toPrettyDate = unix => {
-  let date = dateFromUnix(unix)
-  let hoursOffset = date.getTimezoneOffset() / 60
-  date.setHours(date.getHours() - hoursOffset)
-  let dateString = date.toLocaleString("en-US").split(",")
-  return dateString[0].trim()
-}
+const toPrettyDate = (unix) => {
+  let date = dateFromUnix(unix);
+  let hoursOffset = date.getTimezoneOffset() / 60;
+  date.setHours(date.getHours() - hoursOffset);
+  let dateString = date.toLocaleString("en-US").split(",");
+  return dateString[0].trim();
+};
 
 module.exports = {
   toPrettyDate,
   toIsoString,
   getCompiledAsset,
   getFileContents,
-  setEnvironmentVariables
-}
+  setEnvironmentVariables,
+};

@@ -10,13 +10,22 @@
     "watch": "concurrently \"npm run watch-assets\" \"npm run watch-files\"",
     "watch-assets": "parcel watch src/assets/js/index.js -d src/assets/dist",
     "watch-files": "node file-watch",
-    "build": "parcel build src/assets/js/index.js -d src/assets/dist"
+    "build": "parcel build src/assets/js/index.js -d src/assets/dist",
+    "prettify": "prettier --write \"./**/*.{js,css,md}\""
   },
   "keywords": [
     "jam-comments",
     "eleventy",
     "comments"
   ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  },
   "dependencies": {
     "chokidar": "^3.4.3",
     "concurrently": "^5.3.0",
@@ -27,8 +36,11 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.11.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.2",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
+    "prettier": "^2.1.2",
     "sass": "^1.27.0"
   }
 }

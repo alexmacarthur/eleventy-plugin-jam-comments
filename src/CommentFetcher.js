@@ -14,13 +14,13 @@ const COMMENTS_QUERY = `
 `;
 
 class CommentFetcher {
-  constructor({domain, apiKey}) {
+  constructor({ domain, apiKey }) {
     this.domain = domain;
     this.client = QuestClient({
       endpoint: "http://localhost:4000/graphql",
       method: "GET",
       headers: {
-        "x-api-key": apiKey
+        "x-api-key": apiKey,
       },
     });
   }

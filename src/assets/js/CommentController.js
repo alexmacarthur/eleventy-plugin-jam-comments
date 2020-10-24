@@ -5,8 +5,12 @@ import { CREATE_COMMENT_QUERY } from "./queries";
 export default function CommentController(shell) {
   const minimumSubmissionTime = 1000;
   const loadingSvg = shell.querySelector(".jc-CommentBox-loadingDots");
-  const commentList = shell.querySelector('[data-jam-comments-component="list"]');
-  const message = shell.querySelector('[data-jam-comments-component="message"]')
+  const commentList = shell.querySelector(
+    '[data-jam-comments-component="list"]'
+  );
+  const message = shell.querySelector(
+    '[data-jam-comments-component="message"]'
+  );
   const client = new QuestClient({
     endpoint: "http://localhost:4000/graphql",
     headers: {
@@ -21,11 +25,13 @@ export default function CommentController(shell) {
    */
   const listenForTextareaFocus = () => {
     shell.querySelector('[name="content"]').addEventListener("focus", (e) => {
-      [...shell.querySelectorAll(".jc-CommentBox-contactInput")].forEach((i) => {
-        i.style.display = "flex";
-      });
+      [...shell.querySelectorAll(".jc-CommentBox-contactInput")].forEach(
+        (i) => {
+          i.style.display = "flex";
+        }
+      );
     });
-  }
+  };
 
   /**
    * When form is submitted, send to service & respond accordingly.
@@ -37,7 +43,9 @@ export default function CommentController(shell) {
       e.preventDefault();
 
       const startTime = getCurrentTime();
-      const { content, name, emailAddress } = formatFormValues(e.target.elements);
+      const { content, name, emailAddress } = formatFormValues(
+        e.target.elements
+      );
 
       console.log(shell.dataset.jamCommentsUrl);
 
@@ -53,10 +61,11 @@ export default function CommentController(shell) {
       loadingSvg.style.display = "";
 
       client.send(CREATE_COMMENT_QUERY, variables).then((result) => {
-        const remaining = minimumSubmissionTime - (getCurrentTime() - startTime);
+        const remaining =
+          minimumSubmissionTime - (getCurrentTime() - startTime);
         const delay = remaining > 0 ? remaining : 0;
 
-        if(result.errors || !result.data) {
+        if (result.errors || !result.data) {
           hideLoadingSvg();
           return showError();
         }
@@ -67,7 +76,7 @@ export default function CommentController(shell) {
         }, delay);
       });
     });
-  }
+  };
 
   /**
    * Hide the loading SVG.
@@ -76,7 +85,7 @@ export default function CommentController(shell) {
    */
   const hideLoadingSvg = () => {
     loadingSvg.style.display = "none";
-  }
+  };
 
   /**
    * Display a generic error message.
@@ -85,8 +94,9 @@ export default function CommentController(shell) {
    */
   const showError = () => {
     message.style.display = "";
-    message.firstElementChild.innerText = "Oh no! Something went wrong while trying to submit that comment.";
-  }
+    message.firstElementChild.innerText =
+      "Oh no! Something went wrong while trying to submit that comment.";
+  };
 
   /**
    * Clone list item and attach to list of comments with latest comment data.
@@ -94,28 +104,27 @@ export default function CommentController(shell) {
    * @return {void}
    */
   const appendComment = (commentData) => {
-    const contentKeysToReplace = [
-      'content',
-      'createdAt',
-      'name'
-    ];
+    const contentKeysToReplace = ["content", "createdAt", "name"];
 
     commentData.createdAt = toPrettyDate(commentData.createdAt);
 
     const { id } = commentData;
-    const clonedItem = commentList.querySelector('li').cloneNode(true);
+    const clonedItem = commentList.querySelector("li").cloneNode(true);
 
     // Set the text content for each element piece.
-    contentKeysToReplace.forEach(property => {
-      const node = clonedItem.querySelector(`[data-jam-comments-component="${property}"]`);
+    contentKeysToReplace.forEach((property) => {
+      const node = clonedItem.querySelector(
+        `[data-jam-comments-component="${property}"]`
+      );
       node.innerText = commentData[property];
     });
 
-    clonedItem.querySelectorAll('[data-jam-comments-component="anchor"]')
-      .href = `#comment-${id}`;
+    clonedItem.querySelectorAll(
+      '[data-jam-comments-component="anchor"]'
+    ).href = `#comment-${id}`;
 
     commentList.insertBefore(clonedItem, commentList.firstChild);
-  }
+  };
 
   listenForSubmission();
   listenForTextareaFocus();
