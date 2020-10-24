@@ -4,7 +4,7 @@
   "author": "Alex MacArthur <alex@macarthur.me> (https://macarthur.me)",
   "license": "MIT",
   "description": "The official plugin for integrating JamComments into your Eleventy site.",
-  "main": "src/index.js",
+  "main": "src/.eleventy.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "concurrently \"npm run watch-assets\" \"npm run watch-files\"",
@@ -13,10 +13,14 @@
     "build": "parcel build src/assets/js/index.js -d src/assets/dist",
     "prettify": "prettier --write \"./**/*.{js,css,md}\""
   },
+  "files": [
+    "src"
+  ],
   "keywords": [
     "jam-comments",
     "eleventy",
-    "comments"
+    "comments",
+    "blogging"
   ],
   "husky": {
     "hooks": {
