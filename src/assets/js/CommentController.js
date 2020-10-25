@@ -41,13 +41,10 @@ export default function CommentController(shell) {
   const listenForSubmission = () => {
     shell.querySelector("form").addEventListener("submit", (e) => {
       e.preventDefault();
+      const form = e.target;
 
       const startTime = getCurrentTime();
-      const { content, name, emailAddress } = formatFormValues(
-        e.target.elements
-      );
-
-      console.log(shell.dataset.jamCommentsUrl);
+      const { content, name, emailAddress } = formatFormValues(form.elements);
 
       const variables = {
         name,
@@ -73,6 +70,7 @@ export default function CommentController(shell) {
         setTimeout(() => {
           hideLoadingSvg();
           appendComment(result.data.createComment);
+          form.reset();
         }, delay);
       });
     });

@@ -1,6 +1,6 @@
 {
   "name": "eleventy-plugin-jam-comments",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Alex MacArthur <alex@macarthur.me> (https://macarthur.me)",
   "license": "MIT",
   "description": "The official plugin for integrating JamComments into your Eleventy site.",
