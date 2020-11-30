@@ -1,3 +1,5 @@
+{% import "./macros.njk" as macros %}
+
 <style>{{ css | safe }}</style>
 
 <div class="jc-Shell" data-jam-comments-component="shell" data-jam-comments-url="{{url | safe}}">
@@ -49,37 +51,14 @@
     </div>
   </div>
   <div class="jc-CommentList">
-    <span class="jc-CommentList-count">{{ comments.length }} comments</span>
+    <span class="jc-CommentList-count">
+      <span data-jam-comments-component="count">{{ comments.length }}</span> comments
+    </span>
     <ul class="jc-CommentList-list" data-jam-comments-component="list">
+      {{ macros.comment(comment={}, style="display: none;") }}
+
       {% for comment in comments %}
-        <li class="jc-CommentList-item">
-          <div class="jc-Comment">
-            <span class="jc-Comment-details">
-              <h6 class="jc-Comment-name" data-jam-comments-component="name">
-                {{comment.name}}
-              </h6>
-              <a
-                class="jc-Comment-anchor"
-                href="#comment-{{comment.id}}"
-                aria-label="comment anchor link"
-                data-jam-comments-component="anchor"
-              >
-                <time
-                  class="jc-Comment-date"
-                  dateTime="{{ comment.createdAt | iso }}"
-                  data-jam-comments-component="createdAt"
-                >
-                  {{ comment.createdAt | prettyDate }}
-                </time>
-              </a>
-            </span>
-            <div class="jc-Comment-content">
-              <p data-jam-comments-component="content">
-                {{comment.content}}
-              </p>
-            </div>
-          </div>
-        </li>
+        {{ macros.comment(comment=comment) }}
       {% endfor %}
     </ul>
   </div>

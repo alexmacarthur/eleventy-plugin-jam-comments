@@ -1,10 +1,11 @@
 {
   "name": "eleventy-plugin-jam-comments",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Alex MacArthur <alex@macarthur.me> (https://macarthur.me)",
-  "license": "MIT",
+  "license": "GPL-2.0",
   "description": "The official plugin for integrating JamComments into your Eleventy site.",
   "main": "src/.eleventy.js",
+  "homepage": "https://jamcomments.com",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "concurrently \"npm run watch-assets\" \"npm run watch-files\"",
@@ -17,6 +18,7 @@
     "src"
   ],
   "keywords": [
+    "jamstack",
     "jam-comments",
     "eleventy",
     "comments",
@@ -35,6 +37,7 @@
     "concurrently": "^5.3.0",
     "graphql-quest": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
+    "jam-comments-utilities": "0.0.6",
     "nunjucks": "^3.2.2",
     "touch": "^3.1.0"
   },

@@ -1,4 +1,3 @@
-require("isomorphic-fetch");
 const path = require("path");
 const nunjucks = require("nunjucks");
 const {
@@ -9,7 +8,10 @@ const {
   setEnvironmentVariables,
 } = require("./utils");
 
-const CommentFetcher = require("./CommentFetcher");
+const {
+  CommentFetcher,
+  utilities: { filterByUrl },
+} = require("jam-comments-utilities/server");
 const env = nunjucks.configure(path.join(__dirname, "views"));
 
 /**
@@ -19,18 +21,11 @@ const env = nunjucks.configure(path.join(__dirname, "views"));
  */
 const commentForm = async function (options, url) {
   const fetcher = new CommentFetcher(options);
-  const {
-    data: { comments },
-    errors,
-  } = await fetcher.getComments();
+  const comments = await fetcher.getAllComments();
   const { domain, apiKey } = options;
   const loadingSvg = getFileContents(`assets/img/loading.svg`);
   const css = getCompiledAsset("css");
   const js = setEnvironmentVariables(getCompiledAsset("js"), domain, apiKey);
-
-  if (errors) {
-    throw "Something went wrong while query for comments.";
-  }
 
   env.addFilter("iso", (time) => {
     return toIsoString(time);
@@ -41,7 +36,7 @@ const commentForm = async function (options, url) {
   });
 
   return env.render("index.njk", {
-    comments,
+    comments: filterByUrl(comments, url),
     css,
     js,
     loadingSvg,

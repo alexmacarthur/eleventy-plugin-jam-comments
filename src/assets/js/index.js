@@ -1,5 +1,5 @@
 import "../scss/style.scss";
-import CommentController from "./CommentController";
+import { CommentController } from "jam-comments-utilities";
 
 // Initialize each comment form found on the page.
 [
