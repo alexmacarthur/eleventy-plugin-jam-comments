@@ -21,6 +21,7 @@
     "jamstack",
     "jam-comments",
     "eleventy",
+    "eleventy-plugin",
     "comments",
     "blogging"
   ],
